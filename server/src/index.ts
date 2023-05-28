@@ -1,14 +1,17 @@
 import dotenv from 'dotenv'
-import express from 'express'
+import express, { Request, Response, NextFunction } from 'express'
 import cookieSession from 'cookie-session'
 import cors from 'cors'
 import passport from 'passport'
 import { Strategy } from 'passport-google-oauth20'
+import multer from 'multer'
 import prisma from '../prisma'
+import uploadFile from './controllers/upload-file'
 import type { User } from '@prisma/client'
 
 dotenv.config()
 const port = process.env.HTTP_PORT || 4000
+const upload = multer()
 
 passport.use(
   new Strategy(
@@ -58,6 +61,13 @@ app.use((req, _, next) => {
 app.use(passport.initialize())
 app.use(passport.session())
 
+const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
+  if (req.isAuthenticated()) {
+    return next()
+  }
+  res.status(401).json({ data: null, error: 'Unauthorized' })
+}
+
 app.get(
   '/auth/google',
   passport.authenticate('google', {
@@ -75,6 +85,8 @@ app.get(
     res.redirect('http://localhost:3000')
   }
 )
+
+app.post('/upload', isAuthenticated, upload.single('file'), uploadFile)
 
 app.get('/', (req, res) => {
   if (!req.user) {
