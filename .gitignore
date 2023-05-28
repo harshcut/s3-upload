@@ -5,10 +5,11 @@ node_modules
 .pnp
 .pnp.js
 
-# testing
-coverage
+# aws
+aws-s3/*
+!aws-s3/package.json
 
-# next.js
+# output
 build
 dist
 dist-ssr
