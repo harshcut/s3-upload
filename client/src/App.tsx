@@ -40,9 +40,11 @@ export default function App() {
         <>
           <nav className="mb-4 flex justify-between">
             <header className="flex-1 rounded-full bg-blue-100 px-4 py-2">{authenticated}</header>
-            <button className="rounded-full bg-black px-4 py-2 text-white outline-offset-4 outline-black">
-              Sign Out
-            </button>
+            <form action={`${import.meta.env.VITE_SERVER_URL}/logout`} method="get">
+              <button className="rounded-full bg-black px-4 py-2 text-white outline-offset-4 outline-black">
+                Sign Out
+              </button>
+            </form>
           </nav>
           <form onSubmit={handleFileUpload}>
             <input

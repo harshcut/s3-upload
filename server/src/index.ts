@@ -87,6 +87,15 @@ app.get(
   }
 )
 
+app.get('/logout', (req, res, next) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err)
+    }
+  })
+  res.redirect('http://localhost:3000')
+})
+
 app.post('/upload', isAuthenticated, upload.single('file'), uploadFile)
 
 app.get('/download/:fileId', isAuthenticated, getFile)
