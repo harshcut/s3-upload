@@ -6,6 +6,7 @@ import passport from 'passport'
 import { Strategy } from 'passport-google-oauth20'
 import multer from 'multer'
 import prisma from '../prisma'
+import getFile from './controllers/get-file'
 import uploadFile from './controllers/upload-file'
 import type { User } from '@prisma/client'
 
@@ -87,6 +88,8 @@ app.get(
 )
 
 app.post('/upload', isAuthenticated, upload.single('file'), uploadFile)
+
+app.get('/download/:fileId', isAuthenticated, getFile)
 
 app.get('/', async (req, res) => {
   if (!req.user) {

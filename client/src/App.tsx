@@ -62,12 +62,15 @@ export default function App() {
           </form>
           <ul className="mt-4">
             {uploads.map((upload, idx) => (
-              <li
-                key={idx}
-                className="flex justify-between rounded-full bg-slate-100 px-4 py-2 hover:my-1"
-              >
-                <span>{upload.fileName}</span>
-                <span>{(upload.fileSize / 1000000).toFixed(2)} MB</span>
+              <li key={idx} className="rounded-full bg-slate-100 hover:bg-yellow-200">
+                <a
+                  className="flex justify-between rounded-full px-4 py-2"
+                  href={`${import.meta.env.VITE_SERVER_URL}/download/${upload.fileId}`}
+                  target="_blank"
+                >
+                  <span>{upload.fileName}</span>
+                  <span>{(upload.fileSize / 1000000).toFixed(2)} MB</span>
+                </a>
               </li>
             ))}
           </ul>

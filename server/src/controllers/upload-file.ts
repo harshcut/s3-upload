@@ -14,6 +14,7 @@ const uploadFile = async (req: Request, res: Response) => {
   const putObjectCommand = new PutObjectCommand({
     Bucket: bucketName,
     Key: fileId,
+    ContentType: file.mimetype,
     Body: file.buffer,
   })
   try {
