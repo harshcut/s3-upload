@@ -4,6 +4,8 @@ import cookieSession from 'cookie-session'
 import cors from 'cors'
 import passport from 'passport'
 import { Strategy } from 'passport-google-oauth20'
+import prisma from '../prisma'
+import type { User } from '@prisma/client'
 
 dotenv.config()
 const port = process.env.HTTP_PORT || 4000
@@ -16,16 +18,28 @@ passport.use(
       callbackURL: '/auth/google/callback',
     },
     async (_accessToken, _refreshToken, profile, done) => {
-      done(null, profile)
+      const user = await prisma.user.findUnique({ where: { googleId: profile.id } })
+      if (!user) {
+        const newUser = await prisma.user.create({
+          data: { googleId: profile.id, displayName: profile.displayName },
+        })
+        return done(null, newUser)
+      }
+      done(null, user)
     }
   )
 )
 
 passport.serializeUser((user, done) => {
-  done(null, user)
+  done(null, (user as User).id)
 })
 
-passport.deserializeUser<Express.User>((user, done) => {
+passport.deserializeUser<string>(async (id, done) => {
+  const user = await prisma.user.findUnique({ where: { id } })
+  if (!user) {
+    const err = new Error('User not found')
+    return done(err, null)
+  }
   done(null, user)
 })
 
