@@ -14,6 +14,7 @@ export default function App() {
         return setAuthenticated(false)
       }
       setAuthenticated(data.displayName)
+      setUploads([...data.uploads])
     })()
   }, [])
 
@@ -59,6 +60,17 @@ export default function App() {
               Upload
             </button>
           </form>
+          <ul className="mt-4">
+            {uploads.map((upload, idx) => (
+              <li
+                key={idx}
+                className="flex justify-between rounded-full bg-slate-100 px-4 py-2 hover:my-1"
+              >
+                <span>{upload.fileName}</span>
+                <span>{(upload.fileSize / 1000000).toFixed(2)} MB</span>
+              </li>
+            ))}
+          </ul>
         </>
       ) : (
         <form action={`${import.meta.env.VITE_SERVER_URL}/auth/google`} method="get">

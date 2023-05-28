@@ -88,11 +88,13 @@ app.get(
 
 app.post('/upload', isAuthenticated, upload.single('file'), uploadFile)
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
   if (!req.user) {
     return res.status(401).json({ data: null, error: 'Unauthorized' })
   }
-  res.status(200).json({ data: req.user, error: null })
+  const user = req.user as User & { uploads?: any[] }
+  user.uploads = await prisma.upload.findMany({ where: { userId: user.id } })
+  res.status(200).json({ data: user, error: null })
 })
 
 app.listen(port, () => {
