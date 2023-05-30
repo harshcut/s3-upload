@@ -6,26 +6,28 @@ import type { Request, Response } from 'express'
 import type { User } from '@prisma/client'
 
 const uploadFileFS = async (req: Request, res: Response) => {
-  const file = req.file
-  if (!file) {
+  const files = req.files as Express.Multer.File[]
+  if (!files) {
     return res.status(400).json({ error: 'No file uploaded' })
   }
-  const fileId = crypto.randomUUID()
+  const { id } = req.user as User
   try {
-    await writeFile(`./${bucketName}/${fileId}`, file.buffer, { encoding: 'binary' })
+    const newUploads = files.map(async (file) => {
+      const fileId = crypto.randomUUID()
+      await writeFile(`./${bucketName}/${fileId}`, file.buffer)
+      return await prisma.upload.create({
+        data: {
+          fileId: fileId,
+          fileName: file.originalname,
+          fileSize: file.size.toString(),
+          userId: id,
+        },
+      })
+    })
+    res.status(200).json({ data: await Promise.all(newUploads), error: null })
   } catch (err) {
     return res.status(500).json({ data: null, error: err })
   }
-  const user = req.user as User
-  const newUpload = await prisma.upload.create({
-    data: {
-      fileId: fileId,
-      fileName: file.originalname,
-      fileSize: file.size.toString(),
-      userId: user.id,
-    },
-  })
-  return res.status(200).json({ data: newUpload, error: null })
 }
 
 export default uploadFileFS

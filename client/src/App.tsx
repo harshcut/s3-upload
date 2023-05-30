@@ -29,7 +29,7 @@ export default function App() {
       body: formData,
     }).then((res) => res.json())
     if (data) {
-      setUploads([...uploads, data])
+      setUploads([...uploads, ...data])
     }
     setLoading(false)
   }
@@ -51,6 +51,7 @@ export default function App() {
               type="file"
               name="file"
               className="w-full rounded-full shadow-[inset_0_0_0_1px_black] file:mr-4 file:rounded-full file:border-none file:bg-black file:px-4 file:py-2 file:text-white"
+              multiple
               required
               disabled={loading}
             />

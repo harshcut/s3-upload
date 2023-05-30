@@ -96,7 +96,7 @@ app.get('/logout', (req, res, next) => {
   res.redirect('http://localhost:3000')
 })
 
-app.post('/upload', isAuthenticated, upload.single('file'), uploadFileFS)
+app.post('/upload', isAuthenticated, upload.array('file'), uploadFileFS)
 
 app.get('/download/:fileId', isAuthenticated, getFileFS)
 
