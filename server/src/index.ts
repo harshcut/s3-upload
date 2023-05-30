@@ -6,8 +6,8 @@ import passport from 'passport'
 import { Strategy } from 'passport-google-oauth20'
 import multer from 'multer'
 import prisma from '../prisma'
-import getFile from './controllers/get-file'
-import uploadFile from './controllers/upload-file'
+import getFileFS from './controllers/get-file-fs'
+import uploadFileFS from './controllers/upload-file-fs'
 import type { User } from '@prisma/client'
 
 dotenv.config()
@@ -96,9 +96,9 @@ app.get('/logout', (req, res, next) => {
   res.redirect('http://localhost:3000')
 })
 
-app.post('/upload', isAuthenticated, upload.single('file'), uploadFile)
+app.post('/upload', isAuthenticated, upload.single('file'), uploadFileFS)
 
-app.get('/download/:fileId', isAuthenticated, getFile)
+app.get('/download/:fileId', isAuthenticated, getFileFS)
 
 app.get('/', async (req, res) => {
   if (!req.user) {

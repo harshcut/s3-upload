@@ -5,9 +5,10 @@ node_modules
 .pnp
 .pnp.js
 
-# aws
+# storage
 aws-s3/*
 !aws-s3/package.json
+server/storage/*
 
 # output
 build
